@@ -119,6 +119,9 @@ function mouseup(e) {
 	
 	if (selectednode != null && nodes[selectednode][0] == true) {
 		if (move*3 < 3 && selectednode < 3 || move*3 >= 3 && selectednode >= 3) {
+		displacement = Math.sqrt(upX^2 + upY^2);
+		if (displacement <= 75) {
+		
 		savX = nodes[selectednode][1];
 		savY = nodes[selectednode][2];
 		
@@ -141,6 +144,7 @@ function mouseup(e) {
 		last[selectednode][1] = savX;
 		last[selectednode][2] = savY;
 		move = Math.abs(move-1);
+		}
 		}
 	}
 	
