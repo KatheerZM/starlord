@@ -11,10 +11,8 @@
 <script>
 var nodes = [[true, 60, 700], [true, 300, 700], [true, 540, 700], [true, 60, 60], [true, 300, 60], [true, 540, 60]];
 var last = [[true, 60, 700], [true, 300, 700], [true, 540, 700], [true, 60, 60], [true, 300, 60], [true, 540, 60]];
-
 var selectednode = null;
 var move = 1;
-
 var canvas = document.createElement('canvas');
 canvas.id = 'PlayingField';
 canvas.width = 600;
@@ -22,15 +20,10 @@ canvas.height = 800;
 canvas.style.border = '2px solid';
 canvas.addEventListener('mousedown', selectnode, false);
 canvas.addEventListener('mouseup', mouseup, false);
-
 document.body.appendChild(canvas);
-
 PlayingField = document.getElementById('PlayingField');
 FieldContext = PlayingField.getContext("2d");
-
-
 FieldContext.fillStyle = "black";
-
 function orientation(x1, y1, x2, y2, x3, y3) {
 	var val = (y2 - y1) * (x3 - x2) - (x2 - x1) * (y3 - y2);
 	
@@ -38,7 +31,6 @@ function orientation(x1, y1, x2, y2, x3, y3) {
 	
 	return (val > 0)? 1: 2;
 }
-
 function doIntersect(x1, y1, x2, y2, x3, y3, x4, y4) {
 	var o1 = orientation(x1, y1, x2, y2, x3, y3);
     var o2 = orientation(x1, y1, x2, y2, x4, y4);
@@ -51,7 +43,6 @@ function doIntersect(x1, y1, x2, y2, x3, y3, x4, y4) {
 	
 	return false;
 }
-
 function update() {
 	for (var i = 0; i < nodes.length; i++) {
 		if (nodes[i][0] == true) {
@@ -61,7 +52,6 @@ function update() {
 		}
 	}
 }
-
 function movenode(dist, degree, node) {
 	FieldContext.beginPath();
 	FieldContext.moveTo(nodes[node][1], nodes[node][2]);
@@ -72,7 +62,6 @@ function movenode(dist, degree, node) {
 	FieldContext.lineTo(nodes[node][1], nodes[node][2]);
 	FieldContext.stroke();
 }
-
 function moveto(X, Y, node) {
 	if (nodes[node][0] == true) {
 		FieldContext.beginPath();
@@ -85,12 +74,9 @@ function moveto(X, Y, node) {
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
-
 function toRad(degree) {
 	return degree * (Math.PI / 180);
 }
-
-
 function selectnode(e) {
 	downX = e.clientX - 10;
 	downY = e.clientY - 10;
@@ -108,7 +94,6 @@ function selectnode(e) {
 	}
 	console.log(selectednode);
 }
-
 function mouseup(e) {
 	
 	upX = e.clientX - 10;
@@ -119,8 +104,10 @@ function mouseup(e) {
 	
 	if (selectednode != null && nodes[selectednode][0] == true) {
 		if (move*3 < 3 && selectednode < 3 || move*3 >= 3 && selectednode >= 3) {
-		displacement = Math.sqrt(upX^2 + upY^2);
-		if (displacement <= 75) {
+		
+		displacement = Math.sqrt(Math.pow(upX-nodes[selectednode][1], 2) + Math.pow(upY-nodes[selectednode][2], 2));
+		console.log(displacement);
+		if (displacement <= 175) {
 		
 		savX = nodes[selectednode][1];
 		savY = nodes[selectednode][2];
@@ -156,9 +143,7 @@ for (var i = 0; i < nodes.length; i++) {
 	FieldContext.arc(nodes[i][1], nodes[i][2], 25, 0, 2*Math.PI);
 	FieldContext.stroke();
 }
-
 update();
-
 </script>
 
 </body>
