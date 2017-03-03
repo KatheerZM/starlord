@@ -1,0 +1,163 @@
+<!DOCTYPE HTML5>
+<html>
+
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+</head>
+
+<body>
+
+<script>
+var nodes = [[true, 60, 700], [true, 300, 700], [true, 540, 700], [true, 60, 60], [true, 300, 60], [true, 540, 60]];
+var last = [[true, 60, 700], [true, 300, 700], [true, 540, 700], [true, 60, 60], [true, 300, 60], [true, 540, 60]];
+
+var selectednode = null;
+var move = 1;
+
+var canvas = document.createElement('canvas');
+canvas.id = 'PlayingField';
+canvas.width = 600;
+canvas.height = 800;
+canvas.style.border = '2px solid';
+canvas.addEventListener('mousedown', selectnode, false);
+canvas.addEventListener('mouseup', mouseup, false);
+
+document.body.appendChild(canvas);
+
+PlayingField = document.getElementById('PlayingField');
+FieldContext = PlayingField.getContext("2d");
+
+
+FieldContext.fillStyle = "black";
+
+function orientation(x1, y1, x2, y2, x3, y3) {
+	var val = (y2 - y1) * (x3 - x2) - (x2 - x1) * (y3 - y2);
+	
+	if (val == 0) {return 0;}
+	
+	return (val > 0)? 1: 2;
+}
+
+function doIntersect(x1, y1, x2, y2, x3, y3, x4, y4) {
+	var o1 = orientation(x1, y1, x2, y2, x3, y3);
+    var o2 = orientation(x1, y1, x2, y2, x4, y4);
+    var o3 = orientation(x3, y3, x4, y4, x1, y1);
+    var o4 = orientation(x3, y3, x4, y4, x2, y2);
+	
+	if (o1 != o2 && o3 != o4) {
+		return true;
+	}
+	
+	return false;
+}
+
+function update() {
+	for (var i = 0; i < nodes.length; i++) {
+		if (nodes[i][0] == true) {
+			FieldContext.beginPath();
+			FieldContext.arc(nodes[i][1], nodes[i][2], 5, 0, 2*Math.PI);
+			FieldContext.fill();
+		}
+	}
+}
+
+function movenode(dist, degree, node) {
+	FieldContext.beginPath();
+	FieldContext.moveTo(nodes[node][1], nodes[node][2]);
+	
+	nodes[node][1] += Math.cos(toRad(degree))*dist;
+	nodes[node][2] -= Math.sin(toRad(degree))*dist;
+	
+	FieldContext.lineTo(nodes[node][1], nodes[node][2]);
+	FieldContext.stroke();
+}
+
+function moveto(X, Y, node) {
+	if (nodes[node][0] == true) {
+		FieldContext.beginPath();
+		FieldContext.moveTo(nodes[node][1], nodes[node][2]);
+	
+		FieldContext.lineTo(X, Y);
+		FieldContext.stroke();
+	}
+}
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function toRad(degree) {
+	return degree * (Math.PI / 180);
+}
+
+
+function selectnode(e) {
+	downX = e.clientX - 10;
+	downY = e.clientY - 10;
+	console.log(downX, downY);
+	for (var i = 0; i < nodes.length; i++) {
+		if (nodes[i][1] <= downX+5) {
+			if (nodes[i][1] >= downX-5) {
+				if (nodes[i][2] <= downY+5) {
+					if (nodes[i][2] >= downY-5) {
+						selectednode = i;
+					}
+				}
+			}
+		}
+	}
+	console.log(selectednode);
+}
+
+function mouseup(e) {
+	
+	upX = e.clientX - 10;
+	upY = e.clientY - 10;
+	
+	upX += ((Math.random()*2)-1)*10;
+	upY += ((Math.random()*2)-1)*10;
+	
+	if (selectednode != null && nodes[selectednode][0] == true) {
+		if (move*3 < 3 && selectednode < 3 || move*3 >= 3 && selectednode >= 3) {
+		savX = nodes[selectednode][1];
+		savY = nodes[selectednode][2];
+		
+		moveto(upX, upY, selectednode);
+		nodes[selectednode][1] = upX;
+		nodes[selectednode][2] = upY;
+	
+	
+		for (var i = 0; i < nodes.length; i++) {
+			if (i != selectednode) {
+				intersect = doIntersect(savX, savY, upX, upY, nodes[i][1], nodes[i][2], last[i][1], last[i][2]);
+				console.log(intersect);
+				if (intersect == true){
+					nodes[i][0] = false;
+					last[i][0] = false;
+				}
+			}
+		}
+		
+		last[selectednode][1] = savX;
+		last[selectednode][2] = savY;
+		move = Math.abs(move-1);
+		}
+	}
+	
+	selectednode = null;
+	update();
+}
+for (var i = 0; i < nodes.length; i++) {
+	FieldContext.beginPath();
+	FieldContext.arc(nodes[i][1], nodes[i][2], 25, 0, 2*Math.PI);
+	FieldContext.stroke();
+}
+
+update();
+
+</script>
+
+</body>
+
+
+</html>
