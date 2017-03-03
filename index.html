@@ -9,6 +9,7 @@
 <body>
 
 <script>
+var starts = [[true, 60, 700], [true, 300, 700], [true, 540, 700], [true, 60, 60], [true, 300, 60], [true, 540, 60]];
 var nodes = [[true, 60, 700], [true, 300, 700], [true, 540, 700], [true, 60, 60], [true, 300, 60], [true, 540, 60]];
 var last = [[true, 60, 700], [true, 300, 700], [true, 540, 700], [true, 60, 60], [true, 300, 60], [true, 540, 60]];
 var selectednode = null;
@@ -48,6 +49,11 @@ function update() {
 		if (nodes[i][0] == true) {
 			FieldContext.beginPath();
 			FieldContext.arc(nodes[i][1], nodes[i][2], 5, 0, 2*Math.PI);
+			FieldContext.fill();
+		}
+		else {
+			FieldContext.beginPath();
+			FieldContext.arc(starts[i][1], starts[i][2], 25, 0, 2*Math.PI);
 			FieldContext.fill();
 		}
 	}
