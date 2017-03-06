@@ -150,7 +150,7 @@ function mouseup(e) {
 }
 
 function divnth(arr, n, off, dvsr) {
-	for (int j = 0; j < arr.length; j+=n) {
+	for (int j = 0; j < arr.length; j+=n;) {
 		if (j == 0 && off != 0) {}
 		else {
 			arr[j-off] /= dvsr;
